@@ -2,7 +2,7 @@ import Square from './Square';
 import './Board.css';
 import { useState } from 'react';
 
-function Board({ currentPlayer, setCurrentPlayer }) {
+function Board({ currentPlayer, setCurrentPlayer, setWinner }) {
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleSquareClick(squareIndex) {
@@ -12,7 +12,8 @@ function Board({ currentPlayer, setCurrentPlayer }) {
     setSquares(newSquares);
     const winner = checkWinner(newSquares);
     if (winner) {
-      console.log(winner);
+      setWinner(currentPlayer);
+      return;
     }
     setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
   }
@@ -37,14 +38,16 @@ function Board({ currentPlayer, setCurrentPlayer }) {
     return null;
   }
   return (
-    <div className="board">
-      {squares.map((value, index) => (
-        <Square
-          key={index}
-          squareValue={value}
-          handleSquareClick={() => handleSquareClick(index)}
-        />
-      ))}
+    <div className="board-container">
+      <div className="board">
+        {squares.map((value, index) => (
+          <Square
+            key={index}
+            squareValue={value}
+            handleSquareClick={() => handleSquareClick(index)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

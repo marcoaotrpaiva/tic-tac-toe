@@ -7,9 +7,17 @@ function LandingPage() {
   const [winner, setWinner] = useState(null);
 
   return (
-    <div className="landingPage">
-      <h2>Player {currentPlayer} Turn</h2>
-      <Board currentPlayer={currentPlayer} setCurrentPlayer={setCurrentPlayer} />
+    <div className="landing-page">
+      <div className="landing-page-player-container">
+        <div className="landing-page-player">
+          {winner ? <h2> Winner Player {currentPlayer}</h2> : <h2> Player {currentPlayer} Turn</h2>}
+        </div>
+      </div>
+      <Board
+        currentPlayer={currentPlayer}
+        setCurrentPlayer={setCurrentPlayer}
+        setWinner={setWinner}
+      />
     </div>
   );
 }
