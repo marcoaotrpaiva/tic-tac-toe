@@ -2,11 +2,8 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
-import dotenv from 'dotenv';
 
 const router = express.Router();
-
-dotenv.config();
 
 function generateToken(userId) {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -15,13 +12,13 @@ function generateToken(userId) {
 }
 router.post('/register', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, wins } = req.body;
 
     const userExists = await User.findOne({ username });
 
     if (userExists) return res.status(400).json({ error: 'Username already exists' });
-
-    const user = await User.create({ username, password });
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, password: hash, type: 'player', wins });
     const token = generateToken(user._id);
 
     res.status(201).json({

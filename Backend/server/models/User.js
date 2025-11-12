@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
   losses: { type: Number, default: 0 },
 });
 
+userSchema.index({ wins: -1, _id: 1 });
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);

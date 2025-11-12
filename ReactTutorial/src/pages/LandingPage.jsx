@@ -1,6 +1,7 @@
 import './LandingPage.css';
 import { useState } from 'react';
 import Board from '../components/Board';
+import Leaderboard from '../components/Leaderboard';
 
 function LandingPage() {
   const [currentPlayer, setCurrentPlayer] = useState('X');
