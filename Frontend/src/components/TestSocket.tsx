@@ -1,25 +1,45 @@
-import { useEffect } from 'react';
-import { connectSocket } from '../socket/connectSocket.ts';
-import type { Socket } from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import { io, type Socket } from 'socket.io-client';
 
-export default function TestSocket() {
+export default function RoomTest() {
+  const [socket, setSocket] = useState<Socket | null>(null); // FIXED
+  const [roomId, setRoomId] = useState('test-room');
+
   useEffect(() => {
-    const socket: Socket = connectSocket();
-
-    socket.on('connect', () => {
-      console.log('⚡ connected:', socket.id);
-      socket.emit('ping', 'hello from client'); // test event
+    const s: Socket = io('http://localhost:4000', {
+      transports: ['websocket'],
     });
 
-    socket.on('pong', (msg) => {
-      console.log('📩 server replied:', msg);
+    setSocket(s);
+
+    s.on('player_joined', (id) => {
+      console.log('👤 Player joined:', id);
     });
 
-    // Cleanup that React requires
+    s.on('room_message', (data) => {
+      console.log('📩 Message from room:', data);
+    });
+
     return () => {
-      socket.disconnect();
+      s.disconnect(); // VALID CLEANUP
     };
   }, []);
 
-  return <div>Socket test running... open console</div>;
+  const joinRoom = () => {
+    socket?.emit('join_room', roomId);
+  };
+
+  const sendMessage = () => {
+    socket?.emit('room_message', {
+      roomId,
+      message: 'Hello from client',
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={joinRoom}>Join Room</button>
+      <button onClick={sendMessage}>Send Message to Room</button>
+    </div>
+  );
 }

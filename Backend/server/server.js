@@ -12,6 +12,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,27 +22,64 @@ const io = new Server(server, {
     origin: '*',
   },
 });
+
 io.on('connection', (socket) => {
   console.log('⚡ Client connected:', socket.id);
 
-  socket.on('ping', (msg) => {
-    console.log('msg:', msg);
-    socket.emit('pong', 'pong from server');
+  // JOIN ROOM
+  socket.on('join_room', (roomId) => {
+    const room = io.sockets.adapter.rooms.get(roomId);
+    const numPlayers = room ? room.size : 0;
+
+    let assignedSymbol;
+
+    if (numPlayers === 0) {
+      assignedSymbol = 'X';
+    } else if (numPlayers === 1) {
+      assignedSymbol = 'O';
+    } else {
+      socket.emit('room_full');
+      return;
+    }
+
+    socket.join(roomId);
+
+    // Send symbol to THIS client
+    socket.emit('symbol', assignedSymbol);
+
+    // Notify others
+    socket.to(roomId).emit('player_joined', socket.id);
+
+    console.log(`Player ${socket.id} joined ${roomId} as ${assignedSymbol}`);
   });
+
+  // HANDLE MOVE
+  socket.on('move', ({ roomId, index, symbol }) => {
+    socket.to(roomId).emit('opponent_move', { index, symbol });
+  });
+
+  // DISCONNECT
   socket.on('disconnect', () => {
     console.log('❌ Client disconnected:', socket.id);
   });
 });
+
+// ---------------------------
+//  MONGO + EXPRESS ROUTES
+// ---------------------------
+
 await mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('❌ MongoDB error:', err));
-console.log('Connected DB:', mongoose.connection.db.databaseName);
 
 await User.init();
+
 app.use('/api/auth', authRoutes);
 app.use('/api', userRoutes);
 
 const PORT = process.env.PORT || 4000;
 
-server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${process.env.PORT}`));
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server at http://0.0.0.0:${PORT}`);
+});
