@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import User from '../models/User.js';
+import { auth } from '../middleware/auth.js';
 const router = Router();
 
-router.get('/leaderboard', async (req, res, next) => {
+router.get('/leaderboard', auth, async (req, res, next) => {
   try {
     const rows = await User.find({}, { username: 1, wins: 1, _id: 0 })
       .sort({ wins: -1, _id: 1 })
@@ -19,6 +20,15 @@ router.get('/deleteUsers', async (req, res, next) => {
     return res.json({ deleted: result.deletedCount });
   } catch (err) {
     next(err);
+  }
+});
+
+router.get('/getUsers', async (req, res) => {
+  try {
+    const users = await User.find({});
+    return res.json({ users: [users] });
+  } catch (err) {
+    console.log(err.message);
   }
 });
 

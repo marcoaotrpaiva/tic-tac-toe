@@ -1,24 +1,20 @@
 import './LandingPage.css';
 import { useState } from 'react';
 import Board from '../components/Board';
-import Leaderboard from '../components/Leaderboard';
-
+import { useLocation } from 'react-router-dom';
 function LandingPage() {
-  const [currentPlayer, setCurrentPlayer] = useState('X');
   const [winner, setWinner] = useState(null);
+  const location = useLocation();
+  const username = location.state?.username;
 
   return (
     <div className="landing-page">
       <div className="landing-page-player-container">
         <div className="landing-page-player">
-          {winner ? <h2> Winner Player {currentPlayer}</h2> : <h2> Player {currentPlayer} Turn</h2>}
+          {winner ? <h2> Winner {username}</h2> : <h2> {username} Turn</h2>}
         </div>
       </div>
-      <Board
-        currentPlayer={currentPlayer}
-        setCurrentPlayer={setCurrentPlayer}
-        setWinner={setWinner}
-      />
+      <Board setWinner={setWinner} />
     </div>
   );
 }

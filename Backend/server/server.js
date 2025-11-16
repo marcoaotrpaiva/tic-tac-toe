@@ -16,6 +16,7 @@ await mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('❌ MongoDB error:', err));
+console.log('Connected DB:', mongoose.connection.db.databaseName);
 
 await User.init();
 app.use('/api/auth', authRoutes);

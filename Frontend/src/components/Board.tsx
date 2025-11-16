@@ -2,8 +2,9 @@ import Square from './Square';
 import './Board.css';
 import { useState } from 'react';
 
-function Board({ currentPlayer, setCurrentPlayer, setWinner }) {
+function Board({ setWinner }) {
   const [squares, setSquares] = useState(Array(9).fill(null));
+  const [currentPlayer, setCurrentPlayer] = useState('X');
 
   function handleSquareClick(squareIndex) {
     if (squares[squareIndex]) return;

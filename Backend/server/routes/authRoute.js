@@ -1,29 +1,23 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import { generateCookie, removeCookie } from '../utils/cookie.ts';
 import User from '../models/User.js';
-
+import { CRYPTO } from '../utils/crypto.ts';
+import { decode, sign, verify } from '../utils/token.ts';
 const router = express.Router();
 
-function generateToken(userId) {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
-  });
-}
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, wins } = req.body;
+    const { username, password } = req.body;
 
     const userExists = await User.findOne({ username });
 
     if (userExists) return res.status(400).json({ error: 'Username already exists' });
-    const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hash, type: 'player', wins });
-    const token = generateToken(user._id);
-
+    const [hash, salt] = await CRYPTO.hash(password);
+    const user = await User.create({ username, hash, salt, wins: 0, losses: 0 });
+    const token = sign(user_id.toString());
+    res.setHeader('Set-Cookie', generateCookie(token, 'auth_token'));
     res.status(201).json({
-      token,
-      user: { username: user.username, wins: user.wins, losses: user.losses },
+      user: { username: user.username },
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -35,14 +29,18 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ error: 'invalid credentials' });
+    if (!user) return res.status(400).json({ error: 'invalid username' });
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ error: 'invalid credentials' });
-    const token = generateToken(user._id);
+    const [computedHash] = await CRYPTO.hash(password, user.salt);
+
+    const valid = computedHash === user.hash;
+    if (!valid) return res.status(400).json({ error: 'invalid pw' });
+
+    const token = await sign(user_id.toString());
+    res.setHeader('Set-Cookie', generateCookie(token, 'auth_token'));
+
     res.json({
-      token,
-      user: { username: user.username, wins: user.wins, losses: user.losses },
+      user: { username: user.username, losses: user.losses },
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
