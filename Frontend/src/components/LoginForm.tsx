@@ -9,6 +9,7 @@ type Inputs = {
   username: string;
   confirmPassword: string;
 };
+
 function LoginForm() {
   const navigate = useNavigate();
   const {
@@ -17,29 +18,35 @@ function LoginForm() {
     watch,
     formState: { errors },
   } = useForm<Inputs>();
+
   const [isLogin, setIsLogin] = useState(true);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const { confirmPassword, ...payload } = data;
-      try {
-        const endpoint = isLogin ? 'login' : 'register';
-        console.log('Payload being sent:', payload, typeof payload);
+      const endpoint = isLogin ? 'login' : 'register';
 
-        const res = await axios.post(`http://localhost:4000/api/auth/${endpoint}/`, payload);
-        console.log('', res.data);
-        if (res) {
-          navigate('/game', { state: { username: payload.username } });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    } catch (err: any) {
-      console.error('❌ Error:', err.response?.data || err.message);
-      alert(err.response?.data?.error || 'Something went wrong');
+      // Remove confirmPassword
+      const payload = {
+        username: data.username,
+        password: data.password,
+      };
+
+      console.log('📤 Sending payload:', payload);
+
+      const res = await axios.post(`http://localhost:4000/api/auth/${endpoint}`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('✅ Auth response:', res.data);
+
+      navigate('/game', { state: { username: payload.username } });
+    } catch (err) {
+      console.error('❌ Error:', err);
     }
   };
-  console.log(watch('username'));
-  console.log(watch('password'));
+
   return (
     <div className="form-container">
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
@@ -48,13 +55,15 @@ function LoginForm() {
           className="form-input form-input-username"
           {...register('username', { required: true })}
         />
+
         <input
           type="password"
-          placeholder="password "
+          placeholder="password"
           autoComplete="new-password"
           className="form-input"
           {...register('password', { required: true })}
         />
+
         {!isLogin && (
           <>
             <input
@@ -67,15 +76,18 @@ function LoginForm() {
               })}
             />
 
-            {/* 🚀 SHOW THE ERROR HERE */}
             {errors.confirmPassword && (
               <p className="error-text">{errors.confirmPassword.message}</p>
             )}
           </>
         )}
-        <button className="form-button-submit">{isLogin ? 'Login' : 'Register'}</button>
+
+        <button className="form-button-submit" type="submit">
+          {isLogin ? 'Login' : 'Register'}
+        </button>
+
         <h1 className="form-text-options" onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'Register' : 'Login'}{' '}
+          {isLogin ? 'Register' : 'Login'}
         </h1>
       </form>
     </div>

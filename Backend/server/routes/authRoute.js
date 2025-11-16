@@ -14,7 +14,7 @@ router.post('/register', async (req, res) => {
     if (userExists) return res.status(400).json({ error: 'Username already exists' });
     const [hash, salt] = await CRYPTO.hash(password);
     const user = await User.create({ username, hash, salt, wins: 0, losses: 0 });
-    const token = sign(user_id.toString());
+    const token = sign(user._id.toString());
     res.setHeader('Set-Cookie', generateCookie(token, 'auth_token'));
     res.status(201).json({
       user: { username: user.username },
@@ -36,7 +36,7 @@ router.post('/login', async (req, res) => {
     const valid = computedHash === user.hash;
     if (!valid) return res.status(400).json({ error: 'invalid pw' });
 
-    const token = await sign(user_id.toString());
+    const token = await sign(user._id.toString());
     res.setHeader('Set-Cookie', generateCookie(token, 'auth_token'));
 
     res.json({

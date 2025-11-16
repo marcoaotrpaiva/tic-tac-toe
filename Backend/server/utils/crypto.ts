@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const MIN_LENGTH = 4;
-const MAX_LENGTH = 12;
+const MAX_LENGTH = 512;
 
 const getSalt = (salt?: string) => {
   if (salt) {
