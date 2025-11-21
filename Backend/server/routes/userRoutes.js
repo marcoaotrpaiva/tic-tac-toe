@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import User from '../models/User.js';
-import { auth } from '../middleware/auth.js';
 const router = Router();
 
-router.get('/leaderboard', auth, async (req, res, next) => {
+router.get('/leaderboard', async (req, res, next) => {
   try {
     const rows = await User.find({}, { username: 1, wins: 1, _id: 0 })
       .sort({ wins: -1, _id: 1 })

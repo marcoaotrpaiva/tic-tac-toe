@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import './Leaderboard.css';
-function Leaderboard() {
-  const [players, setPlayers] = useState([]);
+import type { User as Player } from '../types';
+
+export default function Leaderboard() {
+  const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     const fetchLeaderBoard = async () => {
@@ -10,17 +12,18 @@ function Leaderboard() {
         const json = await res.json();
         setPlayers(json.data);
       } catch (err) {
-        console.log(err.message);
+        console.error('Leaderboard fetch error:', err);
       }
     };
+
     fetchLeaderBoard();
   }, []);
 
   return (
     <div className="leaderboard-container">
       <div className="leaderboard">
-        {players.map((player, index) => (
-          <div className="leaderboard-item-container" key={index}>
+        {players.map((player) => (
+          <div className="leaderboard-item-container" key={player.username}>
             <p>{player.username}</p>
             <p>{player.wins} wins</p>
           </div>
@@ -29,5 +32,3 @@ function Leaderboard() {
     </div>
   );
 }
-
-export default Leaderboard;

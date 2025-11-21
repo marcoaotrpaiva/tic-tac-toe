@@ -1,4 +1,4 @@
-.board {
+.board-game {
   width: 330px;
   height: 330px;
   margin: 40px auto;
@@ -7,8 +7,9 @@
   gap: 8px;
 }
 
-.board-container {
+.header-section {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }

@@ -1,5 +1,47 @@
+/* Leaderboard container wrapper */
+.leaderboard-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Board background box */
+.leaderboard {
+  width: 320px;
+  background: #fff; /* White background for visibility */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Each row */
 .leaderboard-item-container {
   display: flex;
+  justify-content: space-between; /* Name left, wins right */
+  align-items: center;
+  background: #f4f4f4; /* Light grey row */
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  transition: 0.2s ease;
 }
-.leaderboard {
+
+/* Hover */
+.leaderboard-item-container:hover {
+  background: #eaeaea;
+  transform: translateY(-2px);
+}
+
+/* Player name */
+.leaderboard-item-container p:first-child {
+  color: #333; /* visible dark text */
+  font-weight: 600;
+}
+
+/* wins text */
+.leaderboard-item-container p:last-child {
+  color: #777;
+  font-size: 14px;
 }

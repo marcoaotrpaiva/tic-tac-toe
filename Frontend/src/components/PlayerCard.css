@@ -1,0 +1,71 @@
+.player-card-player-infos h2,
+.player-card-player-infos p {
+  color: black;
+  margin: 4px 0; /* reduce spacing */
+}
+.player-card-player-infos p {
+  margin: 2px 0;
+  font-size: 16px;
+}
+
+.user-page-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.user-page-buttons .room-button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  background: #d8d8d8;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.leaderboard-button-container {
+  width: 100%;
+  display: flex;
+  padding-top: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+.leaderboard-button {
+  flex: 0 !important;
+  width: 20rem;
+  padding: 10px;
+  border-radius: 10px;
+  background: #626d0062;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.user-page-buttons .room-button:hover {
+  background: #c9c9c9;
+}
+
+.playercard-container {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  padding: 1.8rem;
+  border-radius: 15px;
+  border: 2px solid #e3e3e3;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+}
+
+.player-card-player-infos {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+  margin-top: 2rem;
+}
+.player-card-player-welcome {
+  margin: 0;
+}

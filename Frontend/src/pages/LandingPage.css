@@ -1,16 +1,209 @@
-.landing-page {
-  height: 100vh;
+/* Container */
+.landing-container {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-}
-.landing-page-player-container {
-  grid-column: 2;
+  min-height: 100vh;
+  background: white;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 20px; /* OK to keep */
 }
-.landing-page-player {
-  align-self: center;
+
+/* NAVBAR */
+.top-bar {
+  width: 100%;
+  height: 58px;
+  background: #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 18px;
+}
+
+.home-icon {
+  font-size: 30px;
+  cursor: pointer;
+  margin-left: 3rem;
+}
+
+.menu-icon {
+  width: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  margin-right: 3rem;
+}
+
+.menu-icon div {
+  height: 3px;
+  background: black;
+  border-radius: 4px;
+}
+
+/* --- ONLY CONTENT BELOW NAVBAR --- */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Title */
+.title {
+  margin-top: 30px;
+  font-size: 24px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  color: #222;
+}
+
+/* BOARD (mobile-first) */
+.board-wrapper {
+  position: relative;
+  margin-top: 25px;
+  overflow: hidden;
+
+  width: 90vw;
+  height: 90vw;
+
+  max-width: 350px;
+  max-height: 350px;
+}
+
+.board-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #d8d8d8;
+  position: absolute;
+}
+
+/* Lines container */
+.board {
+  position: absolute;
+  margin-top: -10px;
+  inset: 0;
+}
+
+/* Vertical lines */
+.v-line {
+  position: absolute;
+  top: -15%;
+  width: calc(1.5%); /* line thickness scales */
+  height: 115%;
+  background: #222;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.v-line:nth-child(1) {
+  left: 33.33%;
+}
+.v-line:nth-child(2) {
+  left: 66.66%;
+}
+
+/* Horizontal lines */
+.h-line {
+  position: absolute;
+  height: calc(1.5%);
+  width: 115%;
+  background: #222;
+  top: 50%;
+  right: -10%;
+  transform: translateY(-50%);
+}
+
+.h-line:nth-child(3) {
+  top: 30%;
+}
+.h-line:nth-child(4) {
+  top: 60%;
+}
+
+/* Buttons */
+.buttons-section {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.btn-guest {
+  background: #d8d8d8;
+  padding: 14px 40px;
+  border: none;
+  border-radius: 20px;
+  color: black;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+}
+.btn-guest:focus,
+.btn-guest:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.or-text {
+  margin: 12px 0;
+  color: #555;
+}
+
+.btn-login {
+  display: inline-block;
+  padding: 10px 35px;
+  border: 1px solid #000;
+  border-radius: 20px;
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+}
+.static-board {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  /* ensures X/O are centered */
+  font-size: 48px;
+  font-weight: bold;
+  color: #222;
+}
+
+.static-board .cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell-bottom {
+  margin-bottom: 3rem;
+}
+.cell-left {
+  margin-left: 2rem;
+}
+
+/* Tiny width phones */
+
+/* SHORT HEIGHT DEVICES — board hides, buttons center */
+@media (max-height: 640px) {
+  .board-wrapper {
+    display: none;
+  }
+
+  .page-content {
+    justify-content: center;
+    height: calc(100vh - 58px); /* keep navbar fixed */
+  }
+
+  .title {
+    margin-top: 400px; /* NEW — pushes title upward */
+    margin-bottom: 20px;
+  }
+
+  .buttons-section {
+    margin-top: 0;
+  }
 }

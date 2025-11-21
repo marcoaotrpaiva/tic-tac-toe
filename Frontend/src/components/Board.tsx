@@ -7,15 +7,14 @@ interface BoardProps {
   socket: Socket;
   roomId: string;
   symbol: 'X' | 'O';
+  disabled: boolean; // <--- ADDED
 }
 
-export default function Board({ socket, roomId, symbol }: BoardProps) {
+export default function Board({ socket, roomId, symbol, disabled }: BoardProps) {
   const [squares, setSquares] = useState<(null | 'X' | 'O')[]>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X');
 
-  // -----------------------
-  // Handle opponent moves
-  // -----------------------
+  // Opponent Move Listener
   useEffect(() => {
     const handleOpponentMove = ({
       index,
@@ -25,7 +24,7 @@ export default function Board({ socket, roomId, symbol }: BoardProps) {
       symbol: 'X' | 'O';
     }) => {
       updateSquare(index, moveSymbol, false);
-      setCurrentPlayer(moveSymbol === 'X' ? 'O' : 'X'); // <<< TURNO AJUSTADO
+      setCurrentPlayer(moveSymbol === 'X' ? 'O' : 'X');
     };
 
     socket.on('opponent_move', handleOpponentMove);
@@ -35,9 +34,6 @@ export default function Board({ socket, roomId, symbol }: BoardProps) {
     };
   }, [socket, squares]);
 
-  // -----------------------
-  // Update a square
-  // -----------------------
   function updateSquare(index: number, playerSymbol: 'X' | 'O', isMyMove: boolean) {
     const newSquares = [...squares];
     newSquares[index] = playerSymbol;
@@ -49,18 +45,20 @@ export default function Board({ socket, roomId, symbol }: BoardProps) {
       return;
     }
 
-    // Se fui eu a jogar → alternar o turno
     if (isMyMove) {
       setCurrentPlayer(playerSymbol === 'X' ? 'O' : 'X');
     }
   }
 
-  // -----------------------
-  // Handle click on square
-  // -----------------------
   function handleSquareClick(squareIndex: number) {
-    if (currentPlayer !== symbol) return; // not your turn
-    if (squares[squareIndex]) return; // square already filled
+    if (disabled) {
+      // <--- ADDED
+      console.log('Waiting for second player...');
+      return;
+    }
+
+    if (currentPlayer !== symbol) return;
+    if (squares[squareIndex]) return;
 
     updateSquare(squareIndex, symbol, true);
 
@@ -71,9 +69,6 @@ export default function Board({ socket, roomId, symbol }: BoardProps) {
     });
   }
 
-  // -----------------------
-  // Winner detection
-  // -----------------------
   function checkWinner(board: (null | 'X' | 'O')[]) {
     const lines = [
       [0, 1, 2],
@@ -94,11 +89,8 @@ export default function Board({ socket, roomId, symbol }: BoardProps) {
     return null;
   }
 
-  // -----------------------
-  // Render
-  // -----------------------
   return (
-    <div className="board">
+    <div className="board-game">
       {squares.map((value, index) => (
         <Square
           key={index}

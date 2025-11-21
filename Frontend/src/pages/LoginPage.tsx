@@ -1,14 +1,17 @@
 import './LoginPage.css';
-import Leaderboard from '../components/Leaderboard';
+import { useLocation } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 import Navbar from '../components/Navbar';
-function LoginPage() {
+export default function LoginPage() {
+  const { pathname } = useLocation();
+  const mode = pathname === '/login' ? 'login' : 'register';
+
   return (
-    <div className="login-page-container">
+    <>
       <Navbar />
-      <LoginForm />
-    </div>
+      <div className="login-page-container">
+        <LoginForm mode={mode} />
+      </div>
+    </>
   );
 }
-
-export default LoginPage;

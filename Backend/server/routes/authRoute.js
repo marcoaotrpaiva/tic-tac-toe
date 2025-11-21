@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
     res.setHeader('Set-Cookie', generateCookie(token, 'auth_token'));
 
     res.json({
-      user: { username: user.username, losses: user.losses },
+      user: { username: user.username, wins: user.wins, losses: user.losses },
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
